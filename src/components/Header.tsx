@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './Header.module.css';
 import { 
     Menu, 
-    UserCircle, 
+    User,
     X, 
     Home, 
     Calendar, 
@@ -82,10 +82,15 @@ export const Header: React.FC = () => {
     };
 
     const handleLogout = async () => {
-        setIsMenuOpen(false);
-        await authService.signOut();
-        navigate('/');
-        window.location.reload();
+        try {
+            setIsMenuOpen(false);
+            await authService.signOut();
+        } catch (error) {
+            console.error('Error signing out:', error);
+        } finally {
+            navigate('/');
+            window.location.reload();
+        }
     };
 
     const roleBadgeLabel = currentUserRole ? currentUserRole.toUpperCase() : '';
@@ -128,7 +133,9 @@ export const Header: React.FC = () => {
                         ) : initials ? (
                             <span className={styles.avatarInitials}>{initials}</span>
                         ) : (
-                            <UserCircle size={24} fill="currentColor" className={styles.userIcon} />
+                            <div className={styles.defaultGuestAvatar} aria-label="Default avatar">
+                                <User size={16} className={styles.guestAvatarIcon} />
+                            </div>
                         )}
                     </div>
                 </button>
@@ -163,7 +170,9 @@ export const Header: React.FC = () => {
                         ) : initials ? (
                             <span className={styles.drawerAvatarInitials}>{initials}</span>
                         ) : (
-                            <UserCircle size={40} fill="currentColor" className={styles.drawerUserIconLarge} />
+                            <div className={styles.defaultGuestAvatar} aria-label="Default avatar">
+                                <User size={24} className={styles.guestAvatarIcon} />
+                            </div>
                         )}
                     </div>
                     <div className={styles.drawerUserInfo}>
